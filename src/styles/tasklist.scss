@@ -29,7 +29,7 @@ section.task-list {
       input {
         flex: 1;
         background: var(--background);
-        border: 0;
+        border: 1px solid transparent;
         color: var(--text);
         padding: 12px 24px;
         
@@ -38,6 +38,9 @@ section.task-list {
         
         &::placeholder {
           color: var(--text-light)
+        }
+        &.emptyValue {
+          border: 1px solid #e57878;
         }
       }
 

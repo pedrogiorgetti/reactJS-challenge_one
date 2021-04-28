@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import {  useState } from 'react'
 
 import '../styles/tasklist.scss'
 
@@ -12,18 +12,60 @@ interface Task {
 
 export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskTitle, setNewTaskTitle] = useState<string>('');
+  
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    const inputElement = document.getElementById('inputElement');
+
+    if(newTaskTitle === '') {
+      
+      inputElement?.classList.add('emptyValue');
+
+      return false;
+    }
+
+    const newTask: Task = {
+      id: Date.now(),
+      title: newTaskTitle,
+      isComplete: false,
+    };
+
+
+    setTasks(oldTask => [...oldTask, newTask])
+    inputElement?.classList.remove('emptyValue');
+    setNewTaskTitle('');
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    
+    setTasks(currentTasks => {
+      const refreshTasks = currentTasks.map(currentTask => {
+        if(currentTask.id === id) {
+          return {
+            ...currentTask,
+            isComplete: !currentTask.isComplete,
+          }
+        }
+        return currentTask;
+        
+      })
+      return refreshTasks;
+    })
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+
+    setTasks(currentTasks => {
+      const refreshTasks = currentTasks.findIndex(currentTask => currentTask.id === id);
+
+      currentTasks.splice(refreshTasks, 1)
+
+      return [...currentTasks];
+    })
   }
 
   return (
@@ -33,6 +75,7 @@ export function TaskList() {
 
         <div className="input-group">
           <input 
+            id="inputElement"
             type="text" 
             placeholder="Adicionar novo todo" 
             onChange={(e) => setNewTaskTitle(e.target.value)}
